@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../python_guanabara"
+		},
+		{
+			"path": "../../games"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

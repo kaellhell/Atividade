@@ -1,0 +1,6 @@
+text = str(input('digite um testo: ')).strip()
+text = text.lower()
+posica = text.count('a')
+print(f'A primeira "a" esta nessa posição:{text.find('a')+1}')
+print(f'A ultima letra "a" aparece na posição: {text.rfind('a')+1}')
+print(f'A letra "a" aparece {posica} vezes no texto')
