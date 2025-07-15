@@ -1,3 +1,4 @@
+#
 from random import choice
 alea = [0,1,2,3,4,5]
 sorte = choice(alea)
