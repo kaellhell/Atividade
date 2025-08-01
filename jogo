@@ -1,0 +1,108 @@
+import pygame
+import random
+import sys
+
+# Inicializa o Pygame
+pygame.init()
+
+# Tamanho da tela
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("RPG - Fuga da Prisão")
+
+# Cores
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (200, 0, 0)
+GREEN = (0, 200, 0)
+BLUE = (0, 0, 255)
+
+# Clock
+clock = pygame.time.Clock()
+FPS = 60
+
+# Jogador
+player_size = 40
+player_pos = [100, 100]
+player_speed = 5
+
+# Inimigos
+enemy_size = 40
+enemies = [[random.randint(0, WIDTH - enemy_size), random.randint(0, HEIGHT - enemy_size)] for _ in range(5)]
+enemy_speed = 2
+
+# Fonte
+font = pygame.font.SysFont("arial", 32)
+
+def draw_player(pos):
+    pygame.draw.rect(screen, BLUE, (*pos, player_size, player_size))
+
+def draw_enemies():
+    for enemy in enemies:
+        pygame.draw.rect(screen, RED, (*enemy, enemy_size, enemy_size))
+
+def move_enemies():
+    for enemy in enemies:
+        if enemy[0] < player_pos[0]:
+            enemy[0] += enemy_speed
+        elif enemy[0] > player_pos[0]:
+            enemy[0] -= enemy_speed
+
+        if enemy[1] < player_pos[1]:
+            enemy[1] += enemy_speed
+        elif enemy[1] > player_pos[1]:
+            enemy[1] -= enemy_speed
+
+def check_collision():
+    player_rect = pygame.Rect(*player_pos, player_size, player_size)
+    for enemy in enemies:
+        enemy_rect = pygame.Rect(*enemy, enemy_size, enemy_size)
+        if player_rect.colliderect(enemy_rect):
+            return True
+    return False
+
+def draw_text(text, color, y_offset=0):
+    text_surface = font.render(text, True, color)
+    rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + y_offset))
+    screen.blit(text_surface, rect)
+
+# Game loop
+running = True
+game_over = False
+while running:
+    clock.tick(FPS)
+    screen.fill(WHITE)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    keys = pygame.key.get_pressed()
+    if not game_over:
+        if keys[pygame.K_LEFT]:
+            player_pos[0] -= player_speed
+        if keys[pygame.K_RIGHT]:
+            player_pos[0] += player_speed
+        if keys[pygame.K_UP]:
+            player_pos[1] -= player_speed
+        if keys[pygame.K_DOWN]:
+            player_pos[1] += player_speed
+
+        move_enemies()
+        if check_collision():
+            game_over = True
+
+        draw_player(player_pos)
+        draw_enemies()
+    else:
+        draw_text("VOCÊ FOI PEGO!", RED)
+        draw_text("Pressione R para Reiniciar", BLACK, 40)
+        if keys[pygame.K_r]:
+            player_pos = [100, 100]
+            enemies = [[random.randint(0, WIDTH - enemy_size), random.randint(0, HEIGHT - enemy_size)] for _ in range(5)]
+            game_over = False
+
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()
